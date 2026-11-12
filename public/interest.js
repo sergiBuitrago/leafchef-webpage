@@ -3,6 +3,15 @@ const form = document.querySelector('#interest-form');
 const status = document.querySelector('#interest-status');
 const fields = form.querySelector('fieldset');
 const button = form.querySelector('button');
+const note = document.querySelector('#interest-note');
+function showStatus(message, state = 'info', focus = false) {
+  status.textContent = message;
+  status.dataset.state = state;
+  if (focus) {
+    status.focus({ preventScroll: true });
+    status.scrollIntoView({ block: 'nearest' });
+  }
+}
 const endpoint = 'https://vjkdmxknbtlrsnsqfayq.supabase.co/functions/v1/register-interest';
 // Public anon key for the function's existing JWT gateway. Never use a service-role key.
 const publicKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqa2RteGtuYnRscnNuc3FmYXlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5NjkxMDEsImV4cCI6MjEwMDU0NTEwMX0.M-3gNiQLFNEsT90YRVAmmIq8n-X_c-JuCJk79oXW6nI';
@@ -18,7 +27,11 @@ let scriptLoaded = false;
 let token = '';
 let widget;
 let submitting = false;
-function updateButton() { button.disabled = !consent.checked || !token || submitting; }
+function updateButton() {
+  button.disabled = fields.disabled || !consent.checked || !token || submitting;
+  button.textContent = submitting ? 'Sending...' : "I'm interested";
+  form.setAttribute('aria-busy', String(submitting));
+}
 function resetChallenge() {
   token = '';
   if (widget !== undefined) window.turnstile.reset(widget);
@@ -29,28 +42,29 @@ window.leafchefTurnstileReady = () => {
   try {
     widget = window.turnstile.render('#interest-challenge', {
       sitekey: '0x4AAAAAAF-R_WrP0qn7H4Ao', action: 'interest',
-      callback: value => { token = value; updateButton(); },
-      'expired-callback': () => { token = ''; updateButton(); },
+      callback: value => { token = value; updateButton(); showStatus("Ready! Press I'm interested to send your interest."); },
+      'expired-callback': () => { token = ''; updateButton(); showStatus('The spam check expired. Please complete it again.', 'error'); },
       'error-callback': () => {
         token = ''; updateButton();
-        status.textContent = 'The spam check could not load. Please refresh to try again.';
+        showStatus('The spam check could not load. Please refresh to try again.', 'error');
       }
     });
   } catch {
-    status.textContent = 'The spam check could not load. Please refresh to try again.';
+    showStatus('The spam check could not load. Please refresh to try again.', 'error');
   }
 };
 async function prepareForm() {
   try {
     const response = await fetch(endpoint, { headers, cache: 'no-store' });
     const data = await response.json();
-    if (!response.ok || data.message !== 'open') return;
+    if (!response.ok) { showStatus('The interest form is temporarily unavailable. Please try again later.', 'error'); return; }
+    if (data.message !== 'open') { showStatus('The interest form is not open yet. Please check back later.'); return; }
     fields.disabled = false;
     updateButton();
-    status.textContent = 'Choose a country or region if you like. The spam check loads only if you agree below.';
+    showStatus('Choose a country or region if you like. The spam check loads only if you agree below.');
 
   } catch {
-    // Keep the form closed if the function cannot be reached.
+    showStatus('The interest form could not load. Please refresh to try again.', 'error');
   }
 }
 consent.addEventListener('change', () => {
@@ -58,14 +72,15 @@ consent.addEventListener('change', () => {
   if (!consent.checked) {
     if (widget !== undefined) window.turnstile.remove(widget);
     widget = undefined;
-    status.textContent = 'Spam check disabled. You can still browse LeafChef or contact the creator by email.';
+    showStatus('Spam check disabled. You can still browse LeafChef or contact the creator by email.');
   } else if (window.turnstile) window.leafchefTurnstileReady();
   else if (!scriptLoaded) {
+    showStatus('Loading the spam check...');
     scriptLoaded = true;
     const script = document.createElement('script');
     script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=leafchefTurnstileReady&render=explicit';
     script.async = true;
-    script.onerror = () => { status.textContent = 'The spam check could not load. Please refresh to try again.'; };
+    script.onerror = () => { showStatus('The spam check could not load. Please refresh to try again.', 'error'); };
     document.head.append(script);
   }
   updateButton();
@@ -74,21 +89,24 @@ form.addEventListener('submit', async event => {
   event.preventDefault();
   if (fields.disabled || !consent.checked || submitting || !token || !form.reportValidity()) return;
   submitting = true; updateButton();
-  status.textContent = 'Sending your interest…';
+  showStatus('Sending your interest...', 'pending', true);
   try {
     const response = await fetch(endpoint, {
-      method: 'POST', headers: { ...headers, 'Content-Type': 'application/json' },
+      method: 'POST', signal: AbortSignal.timeout(30000), headers: { ...headers, 'Content-Type': 'application/json' },
       body: JSON.stringify({ country: form.elements.country.value, website: form.elements.website.value, consent: true, token })
     });
     const data = await response.json();
-    status.textContent = data.message || 'We could not confirm your submission. Please try again later.';
     if (response.ok) {
-      form.reset(); fields.disabled = true;
+      form.reset(); fields.disabled = true; fields.hidden = true; note.hidden = true;
       window.turnstile.remove(widget); token = '';
-    } else resetChallenge();
+      showStatus("Thank you! Your interest has been sent. You're helping LeafChef grow.", 'success', true);
+    } else {
+      resetChallenge();
+      showStatus(data.message || 'Your interest could not be sent. Please try again later.', 'error', true);
+    }
   } catch {
-    status.textContent = 'We could not confirm your submission. Please try again later.';
     resetChallenge();
+    showStatus('We could not confirm your submission. Please try again later. If it was already sent, retrying may send it twice.', 'error', true);
   } finally { submitting = false; updateButton(); }
 });
 prepareForm();

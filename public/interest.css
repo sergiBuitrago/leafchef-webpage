@@ -3,3 +3,10 @@
 #interest-challenge{margin-top:16px;max-width:100%;overflow:hidden}
 
 .interest-panel .interest-consent{display:flex;align-items:flex-start;gap:10px;font-size:.85rem;font-weight:400;margin-top:16px;line-height:1.5}.interest-consent input{margin-top:4px;flex-shrink:0}
+
+.interest-panel #interest-status{box-sizing:border-box;min-height:0;margin:16px 0;line-height:1.55}
+.interest-panel #interest-status[data-state=success],.interest-panel #interest-status[data-state=error],.interest-panel #interest-status[data-state=pending]{padding:18px 20px;border-radius:14px;border:1px solid}
+.interest-panel #interest-status[data-state=success]{background:#e5f2df;color:#173c25;border-color:#8aa67f;font-size:1.1rem;font-weight:650}
+.interest-panel #interest-status[data-state=error]{background:#fff0e9;color:#782f1a;border-color:#c4836e}
+.interest-panel #interest-status[data-state=pending]{background:#eef0e7;color:#254b35;border-color:#a7b5a7}
+.interest-panel #interest-status:focus-visible{outline:3px solid #8aa67f;outline-offset:3px}

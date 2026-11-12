@@ -7,7 +7,7 @@ The Android app is a separate project. Do not copy its private data or secrets.
 
 Node 18+; no dependencies or install step. `npm run dev` serves `public/` on
 http://127.0.0.1:4173. `npm run check` validates syntax, assets and anchors and runs
-17 mocked-provider/frontend checks. No real email is sent by the checks.
+21 mocked-provider/frontend checks. No real email is sent by the checks.
 
 ## Website and hosting
 
