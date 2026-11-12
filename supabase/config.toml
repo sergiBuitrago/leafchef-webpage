@@ -1,0 +1,2 @@
+﻿[functions.register-interest]
+verify_jwt = true

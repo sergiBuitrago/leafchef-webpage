@@ -1,0 +1,15 @@
+{
+  "name": "leafchef-webpage",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "LeafChef promotional website",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "check": "node --check public/site.js && node --check public/interest.js && node --check scripts/serve.mjs && node scripts/check.mjs && node --test tests/interest-frontend.test.mjs supabase/functions/register-interest/handler.test.mjs",
+    "start": "node scripts/serve.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

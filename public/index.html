@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#254b35">
+  <title>LeafChef — Your vegan week, made easier</title>
+  <meta name="description" content="Plan vegan meals, make the most of your pantry, and share the shopping with your household. Meet LeafChef, an Android app currently in private testing.">
+  <meta property="og:title" content="LeafChef — Your vegan week, made easier">
+  <meta property="og:description" content="A little planning. A happier kitchen. Vegan meal planning, pantry and shopping, together.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/vegan-bowl.jpg">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="app-preview.css">
+  <link rel="stylesheet" href="routine.css">
+  <link rel="stylesheet" href="interest.css">
+  <script src="interest.js" defer></script>
+  <script src="site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <svg class="icon-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6"/></symbol>
+    <symbol id="icon-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7 3v5m10-5v5M3 11h18m-13 4h2m4 0h2"/></symbol>
+    <symbol id="icon-leaf" viewBox="0 0 24 24"><path d="M20 3C7 3 2 8 5 16s16 5 15-13ZM3 22 15 10"/></symbol>
+    <symbol id="icon-bag" viewBox="0 0 24 24"><path d="M5 8h14l2 13H3L5 8Zm3 0V6a4 4 0 0 1 8 0v2"/></symbol>
+    <symbol id="icon-people" viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3m2-17a3 3 0 0 1 0 6m1 4a5 5 0 0 1 3 5v2"/></symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="icon-pot" viewBox="0 0 24 24"><path d="M4 9h16v8a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V9ZM2 12h2m16 0h2M7 6h10m-5-3v3"/></symbol>
+  </defs></svg>
+
+  <header class="site-header wrap">
+    <a class="brand" href="#" aria-label="LeafChef home"><img src="assets/leafchef.svg" width="36" height="36" alt=""><span>LeafChef</span></a>
+    <nav aria-label="Main navigation"><a href="#the-app">The app</a><a href="#how-it-works">How it works</a><a href="#questions">Questions</a></nav>
+    <a class="header-link" href="#availability">In the kitchen <span class="status-dot" aria-hidden="true"></span></a>
+  </header>
+
+  <main id="main">
+    <section class="hero wrap" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="little-line"></span> A little planning. A happier kitchen.</p>
+        <h1 id="hero-title">Good food.<br>Less <em>guesswork.</em></h1>
+        <p class="hero-description">Your vegan week, made easier. Plan meals you’ll look forward to, use what’s in your pantry, and shop for what’s missing.</p>
+        <div class="hero-actions"><a class="button button-green" href="#the-app">Meet LeafChef <svg class="icon"><use href="#icon-arrow"/></svg></a><a class="text-link" href="#how-it-works">See how it works <span aria-hidden="true">↗</span></a></div>
+        <p class="availability-note"><span class="status-dot" aria-hidden="true"></span> Made for Android · Currently in private testing</p>
+      </div>
+      <div class="hero-visual">
+        <div class="photo-label"><svg class="icon"><use href="#icon-leaf"/></svg> Plant-based, full of possibility</div>
+        <img class="hero-photo" src="assets/vegan-bowl.jpg" width="1536" height="1024" fetchpriority="high" alt="Illustrative vegan bowl with golden tofu, roasted broccoli, rice, chickpeas and lemon.">
+        <div class="recipe-note"><span class="recipe-note-icon"><svg class="icon"><use href="#icon-pot"/></svg></span><div><span class="small-label">A little dinner inspiration</span><strong>Smoky tofu &amp; broccoli bowls</strong><span>Simple ingredients. Something delicious.</span></div></div>
+        <span class="photo-caption">A taste of a greener week.</span>
+      </div>
+    </section>
+
+    <section class="benefits wrap" aria-label="What LeafChef brings together">
+      <div><svg class="icon"><use href="#icon-calendar"/></svg><span>Choose when you cook</span></div>
+      <div><svg class="icon"><use href="#icon-leaf"/></svg><span>Start with your pantry</span></div>
+      <div><svg class="icon"><use href="#icon-bag"/></svg><span>Shop with a plan</span></div>
+      <div><svg class="icon"><use href="#icon-people"/></svg><span>Share the kitchen</span></div>
+    </section>
+
+    <section class="routine-section wrap" id="your-routine" aria-labelledby="routine-title">
+      <div class="routine-story"><p class="eyebrow">Your week starts with you</p><h2 id="routine-title">Choose when<br>you want to cook.</h2><p>Weeknight dinners, weekend lunches, or a few meals in between. Choose the days and meals you want LeafChef to plan, and keep your usual week as a starting point for future plans.</p><p>Leave the other slots unselected. Your household’s plan follows the cooking routine you choose.</p><div class="routine-kinds" aria-label="Available meal types"><span>Breakfast</span><span>Lunch</span><span>Dinner</span><span>Snack</span></div></div>
+      <div class="routine-example" id="routine-example"><div class="routine-example-header"><svg class="icon" aria-hidden="true"><use href="#icon-calendar"/></svg><h3>Your normal week</h3></div><p class="routine-instruction">Try selecting the meals you’d like planned.</p><p class="routine-summary" id="routine-summary" aria-live="polite" aria-atomic="true">4 meals across 3 days</p>
+        <div class="routine-day" role="group" aria-label="Monday"><strong>Monday</strong><div class="routine-options"><label class="routine-option"><input type="checkbox" data-routine-day="Monday" aria-label="Monday breakfast"><span>Breakfast</span></label><label class="routine-option"><input type="checkbox" data-routine-day="Monday" aria-label="Monday lunch"><span>Lunch</span></label><label class="routine-option"><input type="checkbox" data-routine-day="Monday" aria-label="Monday dinner"><span>Dinner</span></label><label class="routine-option"><input type="checkbox" data-routine-day="Monday" aria-label="Monday snack"><span>Snack</span></label></div></div>
+        <div class="routine-day" role="group" aria-label="Tuesday"><strong>Tuesday</strong><div class="routine-options"><label class="routine-option"><input type="checkbox" data-routine-day="Tuesday" aria-label="Tuesday breakfast"><span>Breakfast</span></label><label class="routine-option"><input type="checkbox" data-routine-day="Tuesday" aria-label="Tuesday lunch"><span>Lunch</span></label><label class="routine-option"><input type="checkbox" data-routine-day="Tuesday" aria-label="Tuesday dinner" checked><span>Dinner</span></label><label class="routine-option"><input type="checkbox" data-routine-day="Tuesday" aria-label="Tuesday snack"><span>Snack</span></label></div></div>
+        <div class="routine-day" role="group" aria-label="Wednesday"><strong>Wednesday</strong><div class="routine-options"><label class="routine-option"><input type="checkbox" data-routine-day="Wednesday" aria-label="Wednesday breakfast"><span>Breakfast</span></label><label class="routine-option"><input type="checkbox" data-routine-day="Wednesday" aria-label="Wednesday lunch"><span>Lunch</span></label><label class="routine-option"><input type="checkbox" data-routine-day="Wednesday" aria-label="Wednesday dinner"><span>Dinner</span></label><label class="routine-option"><input type="checkbox" data-routine-day="Wednesday" aria-label="Wednesday snack"><span>Snack</span></label></div></div>
+        <div class="routine-day" role="group" aria-label="Thursday"><strong>Thursday</strong><div class="routine-options"><label class="routine-option"><input type="checkbox" data-routine-day="Thursday" aria-label="Thursday breakfast"><span>Breakfast</span></label><label class="routine-option"><input type="checkbox" data-routine-day="Thursday" aria-label="Thursday lunch"><span>Lunch</span></label><label class="routine-option"><input type="checkbox" data-routine-day="Thursday" aria-label="Thursday dinner" checked><span>Dinner</span></label><label class="routine-option"><input type="checkbox" data-routine-day="Thursday" aria-label="Thursday snack"><span>Snack</span></label></div></div>
+        <div class="routine-day" role="group" aria-label="Friday"><strong>Friday</strong><div class="routine-options"><label class="routine-option"><input type="checkbox" data-routine-day="Friday" aria-label="Friday breakfast"><span>Breakfast</span></label><label class="routine-option"><input type="checkbox" data-routine-day="Friday" aria-label="Friday lunch"><span>Lunch</span></label><label class="routine-option"><input type="checkbox" data-routine-day="Friday" aria-label="Friday dinner"><span>Dinner</span></label><label class="routine-option"><input type="checkbox" data-routine-day="Friday" aria-label="Friday snack"><span>Snack</span></label></div></div>
+        <div class="routine-day" role="group" aria-label="Saturday"><strong>Saturday</strong><div class="routine-options"><label class="routine-option"><input type="checkbox" data-routine-day="Saturday" aria-label="Saturday breakfast"><span>Breakfast</span></label><label class="routine-option"><input type="checkbox" data-routine-day="Saturday" aria-label="Saturday lunch"><span>Lunch</span></label><label class="routine-option"><input type="checkbox" data-routine-day="Saturday" aria-label="Saturday dinner"><span>Dinner</span></label><label class="routine-option"><input type="checkbox" data-routine-day="Saturday" aria-label="Saturday snack"><span>Snack</span></label></div></div>
+        <div class="routine-day" role="group" aria-label="Sunday"><strong>Sunday</strong><div class="routine-options"><label class="routine-option"><input type="checkbox" data-routine-day="Sunday" aria-label="Sunday breakfast"><span>Breakfast</span></label><label class="routine-option"><input type="checkbox" data-routine-day="Sunday" aria-label="Sunday lunch" checked><span>Lunch</span></label><label class="routine-option"><input type="checkbox" data-routine-day="Sunday" aria-label="Sunday dinner" checked><span>Dinner</span></label><label class="routine-option"><input type="checkbox" data-routine-day="Sunday" aria-label="Sunday snack"><span>Snack</span></label></div></div>
+        <p class="routine-example-note">Interactive example of the app’s weekly routine choices. Changes stay on this page and aren’t saved to LeafChef.</p>
+      </div>
+    </section>
+
+    <section class="app-section section-space" id="the-app" aria-labelledby="app-title">
+      <div class="wrap app-layout">
+        <div class="app-story">
+          <p class="eyebrow">From “what’s for dinner?” to “let’s cook.”</p>
+          <h2 id="app-title">A calmer kitchen<br>starts with a plan.</h2>
+          <p class="section-intro">Start with the days and meals you want to cook. LeafChef brings your meal ideas, pantry, and shopping together. Less keeping track. More getting dinner on the table.</p>
+          <div class="feature-tabs" role="tablist" aria-orientation="vertical" aria-label="Explore LeafChef features">
+            <button class="feature-tab" id="tab-plan" role="tab" aria-selected="true" aria-controls="panel-plan" data-tab="plan"><span class="tab-number">01</span><span><strong>A plan that fits your week</strong><span>Review vegan meal ideas before making them your plan.</span></span><span class="tab-arrow" aria-hidden="true">↗</span></button>
+            <button class="feature-tab" id="tab-pantry" role="tab" aria-selected="false" aria-controls="panel-pantry" tabindex="-1" data-tab="pantry"><span class="tab-number">02</span><span><strong>Make room for what you have</strong><span>Your pantry inspires recipes without taking over every meal.</span></span><span class="tab-arrow" aria-hidden="true">↗</span></button>
+            <button class="feature-tab" id="tab-shopping" role="tab" aria-selected="false" aria-controls="panel-shopping" tabindex="-1" data-tab="shopping"><span class="tab-number">03</span><span><strong>A list with less guesswork</strong><span>Compare your plan with your pantry. Buy what’s missing.</span></span><span class="tab-arrow" aria-hidden="true">↗</span></button>
+          </div>
+          <p class="demo-note">Light-theme recreations of the current Android layouts, using the app’s actual font and icons. Example data; not captured screenshots.</p>
+        </div>
+        <div class="preview-stage">
+          <span class="stage-tag"><span class="status-dot" aria-hidden="true"></span> The Android app, a closer look</span>
+          <div class="android-preview">
+            <div class="android-status" aria-hidden="true"><span>9:41</span><span>▴ ▰</span></div>
+            <section class="android-panel" role="tabpanel" id="panel-plan" aria-labelledby="tab-plan" tabindex="0" data-panel="plan">
+              <div class="android-toolbar"><svg class="app-icon plan-icon"><use href="assets/app-icons.svg#calendar"/></svg><h3>Weekly Plan</h3><span class="toolbar-actions" aria-hidden="true"><svg class="app-icon"><use href="assets/app-icons.svg#settings"/></svg><svg class="app-icon"><use href="assets/app-icons.svg#add"/></svg></span></div>
+              <div class="android-screen">
+                <div class="android-week"><strong>9 Nov – 15 Nov</strong><div aria-hidden="true"><span>Previous</span><span class="muted">Today</span><span>Next</span></div></div>
+                <div class="android-day collapsed">Monday, 9 Nov <svg class="app-icon"><use href="assets/app-icons.svg#down"/></svg></div>
+                <div class="android-day collapsed">Tuesday, 10 Nov <svg class="app-icon"><use href="assets/app-icons.svg#down"/></svg></div>
+                <div class="android-day collapsed">Wednesday, 11 Nov <svg class="app-icon"><use href="assets/app-icons.svg#down"/></svg></div>
+                <div class="android-day">Thursday, 12 Nov <svg class="app-icon up"><use href="assets/app-icons.svg#down"/></svg><span aria-hidden="true">+</span></div>
+                <div class="android-meal"><div><span>Dinner</span><strong>Tempeh cabbage stir-fry</strong><small>30 min · 4 portions</small></div><svg class="app-icon"><use href="assets/app-icons.svg#more"/></svg></div>
+                <div class="android-day">Friday, 13 Nov <svg class="app-icon up"><use href="assets/app-icons.svg#down"/></svg><span aria-hidden="true">+</span></div>
+                <div class="android-meal"><div><span>Dinner</span><strong>Tofu and broccoli rice skillet</strong><small>30 min · 4 portions</small></div><svg class="app-icon"><use href="assets/app-icons.svg#more"/></svg></div>
+                <div class="android-day">Saturday, 14 Nov <svg class="app-icon up"><use href="assets/app-icons.svg#down"/></svg></div>
+                <p class="android-empty-day">No recipes planned</p>
+              </div>
+            </section>
+            <section class="android-panel" role="tabpanel" id="panel-pantry" aria-labelledby="tab-pantry" tabindex="0" data-panel="pantry" hidden>
+              <div class="android-toolbar"><svg class="app-icon pantry-icon"><use href="assets/app-icons.svg#pantry"/></svg><h3>Pantry</h3><span class="toolbar-actions" aria-hidden="true"><svg class="app-icon"><use href="assets/app-icons.svg#add"/></svg></span></div>
+              <div class="android-screen">
+                <div class="android-search">Search ingredients</div>
+                <div class="android-filters"><div><span>Shelves</span><div class="android-select">All <svg class="app-icon"><use href="assets/app-icons.svg#down"/></svg></div></div><div><span>Needed for</span><div class="android-select">All <svg class="app-icon"><use href="assets/app-icons.svg#down"/></svg></div></div></div>
+                <div class="android-section">Produce <svg class="app-icon up"><use href="assets/app-icons.svg#down"/></svg></div>
+                <div class="android-inventory"><span>Broccoli</span><small>500 g</small><span class="inventory-plus" aria-hidden="true">+</span></div>
+                <div class="android-inventory"><span>Lemons</span><small>3 pieces</small><span class="inventory-plus" aria-hidden="true">+</span></div>
+                <div class="android-section">Grains and pasta <svg class="app-icon up"><use href="assets/app-icons.svg#down"/></svg></div>
+                <div class="android-inventory"><span>Brown rice</span><small>300 g</small><span class="inventory-plus" aria-hidden="true">+</span></div>
+                <div class="android-section">Canned and jarred goods <svg class="app-icon up"><use href="assets/app-icons.svg#down"/></svg></div>
+                <div class="android-inventory"><span>Chickpeas</span><small>2 cans</small><span class="inventory-plus" aria-hidden="true">+</span></div>
+              </div>
+            </section>
+            <section class="android-panel" role="tabpanel" id="panel-shopping" aria-labelledby="tab-shopping" tabindex="0" data-panel="shopping" hidden>
+              <div class="android-toolbar"><svg class="app-icon shopping-icon"><use href="assets/app-icons.svg#shopping"/></svg><h3>Shopping</h3><span class="toolbar-actions" aria-hidden="true"><svg class="app-icon"><use href="assets/app-icons.svg#add"/></svg></span></div>
+              <div class="android-screen">
+                <div class="android-shopping-summary"><div><span>Shopping period</span><strong>12 Nov – 18 Nov</strong></div><div class="android-remaining" aria-live="polite" aria-atomic="true"><strong id="shopping-number">3</strong><span id="shopping-count">ingredients to buy</span></div></div>
+                <div class="android-filters"><div><span>Show items</span><div class="android-select">To buy <svg class="app-icon"><use href="assets/app-icons.svg#down"/></svg></div></div><div><span>Section</span><div class="android-select">All sections <svg class="app-icon"><use href="assets/app-icons.svg#down"/></svg></div></div></div>
+                <form class="demo-shopping android-shopping" id="demo-shopping">
+                  <div class="android-shopping-group" data-shopping-group><div class="android-section">Produce <svg class="app-icon up"><use href="assets/app-icons.svg#down"/></svg></div><label><input type="checkbox" name="spinach"><span>Spinach<small>250 g</small></span><span class="inventory-plus" aria-hidden="true">+</span></label><label><input type="checkbox" name="tomatoes"><span>Cherry tomatoes<small>300 g</small></span><span class="inventory-plus" aria-hidden="true">+</span></label></div>
+                  <div class="android-shopping-group" data-shopping-group><div class="android-section">Refrigerated plant-based <svg class="app-icon up"><use href="assets/app-icons.svg#down"/></svg></div><label><input type="checkbox" name="tofu"><span>Extra-firm tofu<small>400 g</small></span><span class="inventory-plus" aria-hidden="true">+</span></label></div>
+                </form>
+                <div class="android-empty-shopping" id="shopping-empty" hidden><strong>No to buy items</strong><p>Choose another filter or add a household item.</p></div>
+              </div>
+            </section>
+            <div class="android-bottom" aria-hidden="true"><span data-app-nav="home"><i><svg class="app-icon"><use href="assets/app-icons.svg#home"/></svg></i><small>Home</small></span><span class="selected" data-app-nav="plan"><i><svg class="app-icon"><use href="assets/app-icons.svg#calendar"/></svg></i><small>Weekly Plan</small></span><span data-app-nav="pantry"><i><svg class="app-icon"><use href="assets/app-icons.svg#pantry"/></svg></i><small>Pantry</small></span><span data-app-nav="shopping"><i><svg class="app-icon"><use href="assets/app-icons.svg#shopping"/></svg></i><small>Shopping List</small></span><span data-app-nav="more"><i><svg class="app-icon"><use href="assets/app-icons.svg#more"/></svg></i><small>More</small></span></div>
+            <div class="android-gesture" aria-hidden="true"></div>
+          </div>
+          <p class="preview-caption" id="preview-caption">The weekly plan, arranged by day.</p>
+          <button class="reset-demo" type="button" id="reset-shopping" hidden>Reset shopping example</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="how-section section-space wrap" id="how-it-works" aria-labelledby="how-title">
+      <div class="section-heading"><div><p class="eyebrow">A rhythm you can settle into</p><h2 id="how-title">Plan a little.<br>Enjoy your week.</h2></div><p>You don’t need a perfectly stocked pantry or a perfectly organised week to get started.</p></div>
+      <div class="steps">
+        <article><span class="step-number">01 /</span><h3>Choose when you cook.</h3><p>Pick the days and meals you want planned. Add your household’s preferences, allergies, and cooking time to shape the ideas.</p></article>
+        <article><span class="step-number">02 /</span><h3>Make the week yours.</h3><p>Review the draft. Swap a meal that doesn’t appeal. Keep the ideas you’re excited to cook.</p></article>
+        <article><span class="step-number">03 /</span><h3>Shop, cook, enjoy.</h3><p>Check your shopping list, cook from your plan, and mark meals as cooked to keep your kitchen up to date.</p></article>
+      </div>
+    </section>
+
+    <section class="household-section wrap" aria-labelledby="household-title">
+      <div class="household-copy"><p class="eyebrow">For the people you cook with</p><h2 id="household-title">One kitchen.<br>A shared plan.</h2><p>“Did we buy that?” shouldn’t need a group chat. Keep your pantry, shopping list, and meal plan together across your household’s phones.</p><ul><li><svg class="icon"><use href="#icon-check"/></svg> Shared ingredients and shopping</li><li><svg class="icon"><use href="#icon-check"/></svg> Review the same weekly draft</li><li><svg class="icon"><use href="#icon-check"/></svg> See which meals have been cooked</li></ul></div>
+      <div class="household-visual" aria-label="Illustrative household shopping example"><div class="shared-list"><div class="shared-list-top"><svg class="icon"><use href="#icon-bag"/></svg><strong>Shopping list</strong></div><div class="shared-row"><span class="done-check">✓</span><span class="struck">Cherry tomatoes</span><small>Bought</small></div><div class="shared-row"><span class="empty-check"></span><span>Oat milk</span><small>1 litre</small></div><div class="shared-row"><span class="empty-check"></span><span>Fresh basil</span><small>1 bunch</small></div><p class="shared-note"><span class="status-dot"></span> Illustrative shared shopping example</p></div><span class="example-label">Illustrative example</span></div>
+    </section>
+
+    <section class="faq-section section-space wrap" id="questions" aria-labelledby="faq-title"><div><p class="eyebrow">A few good questions</p><h2 id="faq-title">Before you<br>take a look.</h2></div><div class="faq-list">
+      <details><summary>Is LeafChef only for vegan meals?<span aria-hidden="true">+</span></summary><p>Yes. LeafChef is built around vegan cooking, whether you’re already vegan or exploring more plant-based meals.</p></details>
+      <details><summary>Can I choose when I want to cook?<span aria-hidden="true">+</span></summary><p>Yes. In Weekly meals, select the days and meal types you want LeafChef to plan: breakfast, lunch, dinner, or a snack. You can keep your usual weekly routine as the starting point for future plans and leave other meals unselected.</p></details>
+      <details><summary>Does it use AI to plan meals?<span aria-hidden="true">+</span></summary><p>LeafChef uses AI to suggest recipes and weekly meal drafts based on your household’s preferences. You review the draft and can replace individual meals before applying the plan.</p></details>
+      <details><summary>Can I use it with my household?<span aria-hidden="true">+</span></summary><p>Yes. Household members share a pantry, shopping list, and meal plan. LeafChef is currently being tested in everyday use on two Android phones.</p></details>
+      <details><summary>Can I download it or use it in a browser?<span aria-hidden="true">+</span></summary><p>LeafChef is currently an Android app in private household testing. There’s no public download or browser version yet. This website introduces the app; it doesn’t connect to your kitchen data.</p></details>
+    </div></section>
+
+    <section class="availability-section" id="availability" aria-labelledby="availability-title"><div class="wrap availability-inner"><div><p class="eyebrow"><span class="status-dot"></span> Currently simmering</p><h2 id="availability-title">Something good<br>is growing.</h2><p>LeafChef is in private household testing on Android. We’re cooking with it, learning from real routines, and making it better before a wider release.</p><div class="interest-panel"><h3>Want to see LeafChef grow?</h3>
+<form id="interest-form" action="https://vjkdmxknbtlrsnsqfayq.supabase.co/functions/v1/register-interest" method="post" aria-describedby="interest-note interest-status">
+<fieldset disabled><label for="interest-country">Country/region <small>(optional)</small></label><select id="interest-country" name="country"><option value="">Prefer not to say</option></select>
+<div class="interest-trap" aria-hidden="true"><label for="interest-website">Leave this empty</label><input id="interest-website" name="website" tabindex="-1" autocomplete="off"></div>
+<label class="interest-consent"><input id="interest-consent" type="checkbox"> <span>I agree to use Cloudflare Turnstile for the spam check, which processes technical browser and network data. <a href="privacy.html">Privacy details</a>.</span></label><div id="interest-challenge"></div><button type="submit" disabled>I'm interested</button></fieldset>
+<p id="interest-note" class="interest-note">Your interest and optional country/region will be sent to the creator. No email address or precise location is requested. Technical data is processed to deliver and protect this website. Read the <a href="privacy.html">Privacy information</a>.</p>
+<p id="interest-status" role="status" aria-live="polite">The interest form is not open yet. Please check back later.</p>
+<noscript><p>JavaScript is needed to use this form.</p></noscript></form></div><span class="availability-pill">Private testing · No public download yet</span></div><div class="closing-mark" aria-hidden="true"><img src="assets/leafchef.svg" width="180" height="180" alt=""><span>LeafChef</span><small>A little more joy in your kitchen.</small></div></div></section>
+  </main>
+  <footer class="wrap site-footer"><a class="brand" href="#"><img src="assets/leafchef.svg" width="30" height="30" alt=""><span>LeafChef</span></a><p>Vegan meals. A shared kitchen. A simpler week.</p><nav aria-label="Footer navigation"><a href="#the-app">The app</a><a href="#questions">Questions</a><a href="#availability">Availability</a><a href="legal.html">Legal</a><a href="impressum.html">Impressum</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></nav><small>© 2026 LeafChef</small></footer>
+</body>
+</html>
