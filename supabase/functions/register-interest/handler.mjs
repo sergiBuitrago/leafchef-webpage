@@ -1,8 +1,22 @@
 const countryCodes = ["AD", "AE", "AF", "AG", "AI", "AL", "AM", "AO", "AQ", "AR", "AS", "AT", "AU", "AW", "AX", "AZ", "BA", "BB", "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BL", "BM", "BN", "BO", "BQ", "BR", "BS", "BT", "BV", "BW", "BY", "BZ", "CA", "CC", "CD", "CF", "CG", "CH", "CI", "CK", "CL", "CM", "CN", "CO", "CR", "CU", "CV", "CW", "CX", "CY", "CZ", "DE", "DJ", "DK", "DM", "DO", "DZ", "EC", "EE", "EG", "EH", "ER", "ES", "ET", "FI", "FJ", "FK", "FM", "FO", "FR", "GA", "GB", "GD", "GE", "GF", "GG", "GH", "GI", "GL", "GM", "GN", "GP", "GQ", "GR", "GS", "GT", "GU", "GW", "GY", "HK", "HM", "HN", "HR", "HT", "HU", "ID", "IE", "IL", "IM", "IN", "IO", "IQ", "IR", "IS", "IT", "JE", "JM", "JO", "JP", "KE", "KG", "KH", "KI", "KM", "KN", "KP", "KR", "KW", "KY", "KZ", "LA", "LB", "LC", "LI", "LK", "LR", "LS", "LT", "LU", "LV", "LY", "MA", "MC", "MD", "ME", "MF", "MG", "MH", "MK", "ML", "MM", "MN", "MO", "MP", "MQ", "MR", "MS", "MT", "MU", "MV", "MW", "MX", "MY", "MZ", "NA", "NC", "NE", "NF", "NG", "NI", "NL", "NO", "NP", "NR", "NU", "NZ", "OM", "PA", "PE", "PF", "PG", "PH", "PK", "PL", "PM", "PN", "PR", "PS", "PT", "PW", "PY", "QA", "RE", "RO", "RS", "RU", "RW", "SA", "SB", "SC", "SD", "SE", "SG", "SH", "SI", "SJ", "SK", "SL", "SM", "SN", "SO", "SR", "SS", "ST", "SV", "SX", "SY", "SZ", "TC", "TD", "TF", "TG", "TH", "TJ", "TK", "TL", "TM", "TN", "TO", "TR", "TT", "TV", "TW", "TZ", "UA", "UG", "UM", "US", "UY", "UZ", "VA", "VC", "VE", "VG", "VI", "VN", "VU", "WF", "WS", "YE", "YT", "ZA", "ZM", "ZW"];
 const emailValid = value => typeof value === 'string' && value.length <= 254 && /^[^\s@<>\r\n]+@[^\s@<>\r\n]+\.[^\s@<>\r\n]+$/.test(value);
-export function createHandler(env, fetcher = fetch) {
-  const get = key => env[key];
+export function configurationChecks(env) {
+  return {
+    enabled: env.LEAFCHEF_INTEREST_ENABLED === 'true',
+    brevoApiKey: Boolean(env.LEAFCHEF_BREVO_API_KEY),
+    brevoSenderEmail: emailValid(env.LEAFCHEF_BREVO_SENDER_EMAIL),
+    notificationEmail: emailValid(env.LEAFCHEF_INTEREST_TO_EMAIL),
+    turnstileSecret: Boolean(env.LEAFCHEF_TURNSTILE_SECRET_KEY),
+    databaseUrl: Boolean(env.SUPABASE_URL),
+    databaseServiceKey: Boolean(env.SUPABASE_SERVICE_ROLE_KEY),
+    siteOrigin: /^https:\/\/[^/]+$/.test(env.LEAFCHEF_SITE_ORIGIN || '')
+  };
+}
+export function createHandler(env, fetcher = fetch, reportConfiguration = () => {}) {
+  let lastReported = '';
   return async request => {
+    const settings = typeof env === 'function' ? env() : env;
+    const get = key => settings[key];
     const origin = request.headers.get('origin');
     const allowed = get('LEAFCHEF_SITE_ORIGIN');
     const headers = { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', Vary: 'Origin' };
@@ -13,9 +27,14 @@ export function createHandler(env, fetcher = fetch) {
     });
     const reply = (status, message) => new Response(JSON.stringify({message}), {status, headers});
     if (request.method === 'OPTIONS') return new Response(null, {status: origin === allowed ? 204 : 403, headers});
-    const ready = get('LEAFCHEF_INTEREST_ENABLED') === 'true' && get('LEAFCHEF_BREVO_API_KEY') &&
-      emailValid(get('LEAFCHEF_BREVO_SENDER_EMAIL')) && emailValid(get('LEAFCHEF_INTEREST_TO_EMAIL')) &&
-      get('LEAFCHEF_TURNSTILE_SECRET_KEY') && get('SUPABASE_URL') && get('SUPABASE_SERVICE_ROLE_KEY') && /^https:\/\/[^/]+$/.test(allowed || '');
+    const checks = configurationChecks(settings);
+    const ready = Object.values(checks).every(Boolean);
+    const signature = JSON.stringify(checks);
+    if (!ready && signature !== lastReported) {
+      // Booleans only: no secret values, addresses, origins or visitor data.
+      reportConfiguration(checks);
+      lastReported = signature;
+    }
     if (request.method === 'GET') return reply(200, ready ? 'open' : 'closed');
     if (request.method !== 'POST') return reply(405, 'Method not allowed.');
     if (!ready) return reply(503, 'The interest form is not open yet. Please check back later.');

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createHandler} from './handler.mjs';
+import {createHandler,configurationChecks} from './handler.mjs';
 const env={SUPABASE_URL:'https://database.example',SUPABASE_SERVICE_ROLE_KEY:'server-only-test-key',LEAFCHEF_INTEREST_ENABLED:'true',LEAFCHEF_BREVO_API_KEY:'test',LEAFCHEF_BREVO_SENDER_EMAIL:'sender@example.com',LEAFCHEF_INTEREST_TO_EMAIL:'owner@example.com',LEAFCHEF_SITE_ORIGIN:'https://leaf.example',LEAFCHEF_TURNSTILE_SECRET_KEY:'test'};
 const request=(data,origin=env.LEAFCHEF_SITE_ORIGIN)=>new Request('https://function.example',{method:'POST',headers:{origin,'content-type':'application/json'},body:JSON.stringify({consent:true,...data})});
 const validChallenge=()=>Response.json({success:true,hostname:'leaf.example',action:'interest'});
@@ -82,4 +82,19 @@ test('budget credentials stay server-side and RPC receives no visitor data',asyn
 test('missing affirmative consent blocks all provider calls',async()=>{
  const handler=createHandler(env,()=>assert.fail('no network'));
  assert.equal((await handler(request({country:'DE',token:'token',consent:false}))).status,400);
+});
+
+test('configuration diagnostics contain only booleans and identify invalid settings',()=>{
+ const checks=configurationChecks({...env,LEAFCHEF_BREVO_SENDER_EMAIL:'LeafChef<sender@example.com>',LEAFCHEF_SITE_ORIGIN:'https://leaf.example/'});
+ assert.equal(checks.brevoSenderEmail,false);assert.equal(checks.siteOrigin,false);
+ assert.ok(Object.values(checks).every(value=>typeof value==='boolean'));
+ assert.doesNotMatch(JSON.stringify(checks),/server-only-test-key|sender@example/);
+});
+test('runtime settings refresh between requests; closed diagnostics are reported once per state',async()=>{
+ let settings={...env,LEAFCHEF_INTEREST_ENABLED:'false'};const reports=[];
+ const handler=createHandler(()=>settings,()=>assert.fail('no provider call'),checks=>reports.push(checks));
+ const get=()=>handler(new Request('https://function.example'));
+ assert.equal((await (await get()).json()).message,'closed');
+ await get();assert.equal(reports.length,1);
+ settings={...env};assert.equal((await (await get()).json()).message,'open');
 });
