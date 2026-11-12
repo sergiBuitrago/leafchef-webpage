@@ -26,12 +26,12 @@ or Gmail retention settings, security logs, backups or delivery records. Review
 applicable provider terms/settings and document actual periods and purposes in
 the final privacy notice. Do not imply these records all expire after 90 days.
 
-## Release gate
+## Current status
 
-Keep LEAFCHEF_INTEREST_ENABLED=false until the privacy/provider review, operational
-cleanup procedure, durable spam limits, and end-to-end checks are complete.
-The privacy page remains a local draft; no website publication is performed here.
-
+The website is published, the owner confirmed the live delivery test and then
+disabled collection again. Provider standard-term findings are recorded in
+provider-review.md. No further integration test is required just for this
+documentation update. Collection remains disabled until the owner reopens it.
 
 ## Practical weekly mailbox procedure
 
@@ -47,5 +47,15 @@ normally retains Trash for a further 30 days. Review every seven days so the
 message IDs or exported individual notifications. This procedure is documented
 but has not been installed as an automatic reminder or executed in the mailbox.
 
-Brevo: set relevant-sender log retention to 1 month and never store previews;
-confirm in the account before updating the final public notice. See provider-review.md.
+Brevo: owner confirmed relevant-sender log retention of 1 month and previews off.
+See provider-review.md.
+
+
+## Recurring reminder ready to import
+
+Open/import leafchef-mailbox-cleanup.ics into the owner's calendar. It schedules
+Mondays at 09:00 Europe/Berlin starting 16 November 2026, recurring weekly, with a
+notification 15 minutes before. Adjust the time after import if desired. This is
+an operational reminder, not Gmail deletion automation. Import it once to avoid
+duplicates. No calendar connector is connected; no event has been installed.
+The owner remains responsible for doing the cleanup even if a reminder is missed.

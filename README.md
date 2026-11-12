@@ -7,7 +7,7 @@ The Android app is a separate project. Do not copy its private data or secrets.
 
 Node 18+; no dependencies or install step. `npm run dev` serves `public/` on
 http://127.0.0.1:4173. `npm run check` validates syntax, assets and anchors and runs
-15 mocked-provider/frontend checks. No real email is sent by the checks.
+17 mocked-provider/frontend checks. No real email is sent by the checks.
 
 ## Website and hosting
 
@@ -20,7 +20,7 @@ illustration. There are no testimonials, invented customer figures or download l
 
 Only `public/` is uploaded by the manual GitHub Pages workflow. Expected URL:
 https://sergibuitrago.github.io/leafchef-webpage/ . See GITHUB_PAGES.md.
-The website source is prepared for GitHub Pages; publication is a separate manual workflow. Browser visual comparison
+The owner published the website through GitHub Pages and confirmed the live notification test. Browser visual comparison
 remains pending; the previous computer-use session could not verify the browser URL.
 
 ## Interest button
@@ -42,14 +42,20 @@ stored by the limiter. See supabase/functions/register-interest/README.md.
 ## Legal and release status
 
 The supplied operator identity, public contact and service address are in the
-local Impressum/privacy drafts. Website privacy scope is separate from the app.
+website Impressum/privacy notice. Website privacy scope is separate from the app.
 The source review is in docs/provider-review.md; the 90-day mailbox policy and
 weekly cleanup procedure are in docs/interest-retention.md. No account settings,
 provider agreements, mailbox cleanup or reminders have been configured by this code.
 
-Before enabling: confirm provider account/transfer arrangements, establish mailbox cleanup, publish Pages and test the real browser
-challenge and one notification. Keep LEAFCHEF_INTEREST_ENABLED=false meanwhile.
-The legal pages are pre-launch drafts, not a certification of legal compliance.
+Provider standard-term findings are closed out in docs/provider-review.md. The
+website notice no longer carries the outdated blanket pre-launch-review banner.
+App terms remain a separate draft. This is not a certification of legal compliance.
+The owner confirmed Brevo retention and a real challenge/email delivery test.
+Collection was disabled afterwards and remains owner-controlled.
+
+Import docs/leafchef-mailbox-cleanup.ics once to establish the weekly reminder;
+the documented cleanup remains manual. Deploy the revised static notice through
+the existing manual Pages workflow. No new integration test is required for it.
 
 ## Source map
 
