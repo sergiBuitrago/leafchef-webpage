@@ -27,6 +27,33 @@ let scriptLoaded = false;
 let token = '';
 let widget;
 let submitting = false;
+let submitted = false;
+const submissionKey = 'leafchef.web.interest.submitted.v1';
+function alreadySubmitted() {
+  if (submitted) return true;
+  try { submitted = window.localStorage.getItem(submissionKey) === 'true'; }
+  catch { /* Storage may be blocked; preserve the in-page submission guard. */ }
+  return submitted;
+}
+function rememberSubmission() {
+  submitted = true;
+  try { window.localStorage.setItem(submissionKey, 'true'); return true; }
+  catch { return false; }
+}
+function showSubmitted(message = "You've already sent your interest. Thank you for helping LeafChef grow.", focus = false) {
+  submitted = true;
+  fields.disabled = true; fields.hidden = true; note.hidden = true;
+  token = '';
+  if (widget !== undefined) {
+    try { window.turnstile.remove(widget); } catch { /* Submission stays successful. */ }
+    widget = undefined;
+  }
+  showStatus(message, 'success', focus);
+  updateButton();
+}
+window.addEventListener('storage', event => {
+  if (event.key === submissionKey && event.newValue === 'true') showSubmitted();
+});
 function updateButton() {
   button.disabled = fields.disabled || !consent.checked || !token || submitting;
   button.textContent = submitting ? 'Sending...' : "I'm interested";
@@ -54,9 +81,11 @@ window.leafchefTurnstileReady = () => {
   }
 };
 async function prepareForm() {
+  if (alreadySubmitted()) { showSubmitted(); return; }
   try {
     const response = await fetch(endpoint, { headers, cache: 'no-store' });
     const data = await response.json();
+    if (alreadySubmitted()) { showSubmitted(); return; }
     if (!response.ok) { showStatus('The interest form is temporarily unavailable. Please try again later.', 'error'); return; }
     if (data.message !== 'open') { showStatus('The interest form is not open yet. Please check back later.'); return; }
     fields.disabled = false;
@@ -68,6 +97,7 @@ async function prepareForm() {
   }
 }
 consent.addEventListener('change', () => {
+  if (alreadySubmitted()) { showSubmitted(); return; }
   token = '';
   if (!consent.checked) {
     if (widget !== undefined) window.turnstile.remove(widget);
@@ -87,6 +117,7 @@ consent.addEventListener('change', () => {
 });
 form.addEventListener('submit', async event => {
   event.preventDefault();
+  if (alreadySubmitted()) { showSubmitted(); return; }
   if (fields.disabled || !consent.checked || submitting || !token || !form.reportValidity()) return;
   submitting = true; updateButton();
   showStatus('Sending your interest...', 'pending', true);
@@ -97,9 +128,12 @@ form.addEventListener('submit', async event => {
     });
     const data = await response.json();
     if (response.ok) {
-      form.reset(); fields.disabled = true; fields.hidden = true; note.hidden = true;
-      window.turnstile.remove(widget); token = '';
-      showStatus("Thank you! Your interest has been sent. You're helping LeafChef grow.", 'success', true);
+      const remembered = rememberSubmission();
+      form.reset();
+      const message = remembered
+        ? "Thank you! Your interest has been sent. You're helping LeafChef grow."
+        : "Thank you! Your interest has been sent. Your browser couldn't save this status for future visits.";
+      showSubmitted(message, true);
     } else {
       resetChallenge();
       showStatus(data.message || 'Your interest could not be sent. Please try again later.', 'error', true);

@@ -96,3 +96,16 @@ until the owner imports it. See interest-retention.md. No mailbox was accessed o
 deleted, no calendar invitation sent. The remaining operational action is import
 the reminder (or use an existing weekly routine), and deploy the revised notice.
 Collection stays false unless the owner explicitly reopens it.
+
+
+## Browser completion flag
+
+Successful interest submissions now set leafchef.web.interest.submitted.v1=true
+in localStorage. No country, timestamp, token or unique identifier is stored.
+The flag is read before any availability/captcha request on return visits and
+is not sent to providers. Its narrow purpose is remembering completion of the
+user-requested interest action; it is not analytics or cross-site tracking.
+It persists until the browser/site data is cleared. Storage errors retain only
+the in-page guard and show an accurate success message. This prevents ordinary
+same-browser repeat submissions, not determined bypasses or cross-device use.
+The public privacy notice describes this storage separately from page memory.

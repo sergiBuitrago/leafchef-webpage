@@ -7,7 +7,7 @@ The Android app is a separate project. Do not copy its private data or secrets.
 
 Node 18+; no dependencies or install step. `npm run dev` serves `public/` on
 http://127.0.0.1:4173. `npm run check` validates syntax, assets and anchors and runs
-21 mocked-provider/frontend checks. No real email is sent by the checks.
+27 mocked-provider/frontend checks. No real email is sent by the checks.
 
 ## Website and hosting
 
@@ -30,7 +30,11 @@ not to say. No IP location lookup, visitor database, newsletter or account linka
 The frontend calls Supabase register-interest; an explicit unchecked opt-in must
 be selected before Cloudflare Turnstile loads. After validation, Brevo sends a
 country-only notification to the fixed owner recipient. Counts are submissions,
-not unique people. The only database storage is a private singleton budget counter.
+not unique people. The only database storage is a private singleton budget counter. Successful
+submissions save a browser-only completion flag in localStorage and restore the
+thank-you state on later visits; no country, timestamp or unique ID is saved.
+This deters repeat submissions in the same browser; clearing storage, other
+browsers/devices or unavailable storage can bypass it.
 
 The deployed function is configuration-gated and currently reports closed.
 Global caps: 20 attempts/hour and 100/day, shared across instances and UTC windows.

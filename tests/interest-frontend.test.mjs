@@ -9,11 +9,14 @@ async function setup(open, settings = {}) {
  const consent={checked:false,addEventListener:(name,fn)=>{change=fn;}};
  const calls=[];
  const attributes={};
+ const storage=settings.storage || new Map();
+ const listeners={};
+ const localStorage={getItem:key=>{if(settings.storageBlocked)throw new Error('Storage blocked');return storage.get(key) ?? null;},setItem:(key,value)=>{if(settings.storageBlocked)throw new Error('Storage blocked');storage.set(key,value);}};
  const form={setAttribute:(key,value)=>{attributes[key]=value;},querySelector:s=>s==='fieldset'?fields:button,addEventListener:(event,fn)=>{submit=fn;},reportValidity:()=>true,reset(){},elements:{country:{value:'DE',append(){}},website:{value:''}}};
- const context={AbortSignal,document:{querySelector:s=>s==='#interest-form'?form:s==='#interest-consent'?consent:s==='#interest-note'?note:status,createElement:()=>({}),head:{append:s=>{script=s;}}},window:{turnstile:{render:(selector,config)=>{options=config;return 0;},reset:()=>{resets++;},remove:()=>{removed=true;}}},fetch:async(url,config)=>{calls.push({url,config});if(calls.length>1){if(settings.wait)await settings.wait;if(settings.networkError)throw new Error('Network failed');return settings.postResponse || {ok:true,json:async()=>({message:'Thank you!'})};}return {ok:true,json:async()=>({message:open?'open':'closed'})};}};
+ const context={AbortSignal,document:{querySelector:s=>s==='#interest-form'?form:s==='#interest-consent'?consent:s==='#interest-note'?note:status,createElement:()=>({}),head:{append:s=>{script=s;}}},window:{localStorage,addEventListener:(type,fn)=>{listeners[type]=fn;},turnstile:{render:(selector,config)=>{options=config;return 0;},reset:()=>{resets++;},remove:()=>{removed=true;}}},fetch:async(url,config)=>{calls.push({url,config});if(calls.length>1){if(settings.wait)await settings.wait;if(settings.networkError)throw new Error('Network failed');return settings.postResponse || {ok:true,json:async()=>({message:'Thank you!'})};}return {ok:true,json:async()=>({message:open?'open':'closed'})};}};
  vm.runInNewContext(source,context);
  await new Promise(resolve=>setImmediate(resolve));
- return {fields,button,status,calls,note,attributes,get script(){return script;},get options(){return options;},get removed(){return removed;},get resets(){return resets;},render:()=>{consent.checked=true;change();context.window.leafchefTurnstileReady();},withdraw:()=>{consent.checked=false;change();},submit:()=>submit({preventDefault(){}})};
+ return {fields,button,status,calls,note,attributes,storage,storageEvent:event=>listeners.storage(event),get script(){return script;},get options(){return options;},get removed(){return removed;},get resets(){return resets;},render:()=>{consent.checked=true;change();context.window.leafchefTurnstileReady();},withdraw:()=>{consent.checked=false;change();},submit:()=>submit({preventDefault(){}})};
 }
 test('closed form never loads the third-party challenge',async()=>{
  const app=await setup(false);
@@ -69,4 +72,43 @@ test('network failure never shows success and explains uncertain delivery',async
  const app=await setup(true,{networkError:true});app.render();app.options.callback('token');await app.submit();
  assert.equal(app.status.dataset.state,'error');assert.match(app.status.textContent,/could not confirm/);
  assert.equal(app.fields.hidden,false);assert.equal(app.resets,1);assert.equal(app.button.disabled,true);
+});
+
+test('successful submission stores only a completion flag and survives a reload',async()=>{
+ const storage=new Map();const app=await setup(true,{storage});
+ app.render();app.options.callback('token');await app.submit();
+ assert.deepEqual([...storage.entries()],[['leafchef.web.interest.submitted.v1','true']]);
+ const returning=await setup(true,{storage});
+ assert.equal(returning.fields.hidden,true);assert.equal(returning.button.disabled,true);
+ assert.match(returning.status.textContent,/already sent/);
+ assert.equal(returning.calls.length,0);assert.equal(returning.script,undefined);
+ await returning.submit();assert.equal(returning.calls.length,0);
+});
+test('provider rejection and uncertain network delivery do not save completion',async()=>{
+ for(const settings of [{networkError:true},{postResponse:{ok:false,json:async()=>({message:'Try again later'})}}]){
+  const app=await setup(true,settings);app.render();app.options.callback('token');await app.submit();
+  assert.equal(app.storage.size,0);assert.equal(app.fields.hidden,false);
+ }
+});
+test('blocked browser storage preserves successful feedback and in-page protection',async()=>{
+ const app=await setup(true,{storageBlocked:true});app.render();app.options.callback('token');await app.submit();
+ assert.equal(app.status.dataset.state,'success');assert.match(app.status.textContent,/browser couldn't save/);
+ await app.submit();assert.equal(app.calls.length,2);assert.equal(app.fields.hidden,true);
+});
+test('completion in another tab closes the form without sending another request',async()=>{
+ const app=await setup(true);app.render();app.options.callback('token');
+ app.storageEvent({key:'leafchef.web.interest.submitted.v1',newValue:'true'});
+ assert.equal(app.fields.hidden,true);assert.equal(app.removed,true);
+ await app.submit();assert.equal(app.calls.length,1);
+});
+test('rechecks saved status before submitting even if the storage event was missed',async()=>{
+ const app=await setup(true);app.render();app.options.callback('token');
+ app.storage.set('leafchef.web.interest.submitted.v1','true');
+ await app.submit();assert.equal(app.calls.length,1);assert.equal(app.fields.hidden,true);
+});
+test('unrelated browser storage events do not mark interest submitted',async()=>{
+ const app=await setup(true);
+ app.storageEvent({key:'unrelated',newValue:'true'});
+ app.storageEvent({key:'leafchef.web.interest.submitted.v1',newValue:null});
+ assert.equal(app.fields.hidden,false);
 });
