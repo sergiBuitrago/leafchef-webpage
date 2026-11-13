@@ -35,9 +35,19 @@ native icon shapes and light palette. The hero food photograph is AI-generated
 illustration. There are no testimonials, invented customer figures or download links.
 
 Only `public/` is uploaded by the manual GitHub Pages workflow. Expected URL:
-https://sergibuitrago.github.io/leafchef-webpage/ . See GITHUB_PAGES.md.
+https://leafchef.app/ . See GITHUB_PAGES.md.
 The owner published the website through GitHub Pages and confirmed the live notification test. Browser visual comparison
 remains pending; the previous computer-use session could not verify the browser URL.
+
+## Search indexing
+
+Search discovery: `npm run localize` maintains self-canonical URLs, reciprocal
+absolute language alternates and the four-language `public/sitemap.xml` and
+`public/robots.txt`. Legal pages remain noindex and are excluded from the sitemap.
+To submit the site to Google, verify the Domain property `leafchef.app` in Google
+Search Console using its DNS TXT record, submit `https://leafchef.app/sitemap.xml`,
+and request indexing of the four landing-page URLs. Search Console verification
+and sitemap submission are account actions, not performed by these build scripts.
 
 ## Interest button
 
