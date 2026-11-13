@@ -1,11 +1,12 @@
 const countryCodes = ["AD", "AE", "AF", "AG", "AI", "AL", "AM", "AO", "AQ", "AR", "AS", "AT", "AU", "AW", "AX", "AZ", "BA", "BB", "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BL", "BM", "BN", "BO", "BQ", "BR", "BS", "BT", "BV", "BW", "BY", "BZ", "CA", "CC", "CD", "CF", "CG", "CH", "CI", "CK", "CL", "CM", "CN", "CO", "CR", "CU", "CV", "CW", "CX", "CY", "CZ", "DE", "DJ", "DK", "DM", "DO", "DZ", "EC", "EE", "EG", "EH", "ER", "ES", "ET", "FI", "FJ", "FK", "FM", "FO", "FR", "GA", "GB", "GD", "GE", "GF", "GG", "GH", "GI", "GL", "GM", "GN", "GP", "GQ", "GR", "GS", "GT", "GU", "GW", "GY", "HK", "HM", "HN", "HR", "HT", "HU", "ID", "IE", "IL", "IM", "IN", "IO", "IQ", "IR", "IS", "IT", "JE", "JM", "JO", "JP", "KE", "KG", "KH", "KI", "KM", "KN", "KP", "KR", "KW", "KY", "KZ", "LA", "LB", "LC", "LI", "LK", "LR", "LS", "LT", "LU", "LV", "LY", "MA", "MC", "MD", "ME", "MF", "MG", "MH", "MK", "ML", "MM", "MN", "MO", "MP", "MQ", "MR", "MS", "MT", "MU", "MV", "MW", "MX", "MY", "MZ", "NA", "NC", "NE", "NF", "NG", "NI", "NL", "NO", "NP", "NR", "NU", "NZ", "OM", "PA", "PE", "PF", "PG", "PH", "PK", "PL", "PM", "PN", "PR", "PS", "PT", "PW", "PY", "QA", "RE", "RO", "RS", "RU", "RW", "SA", "SB", "SC", "SD", "SE", "SG", "SH", "SI", "SJ", "SK", "SL", "SM", "SN", "SO", "SR", "SS", "ST", "SV", "SX", "SY", "SZ", "TC", "TD", "TF", "TG", "TH", "TJ", "TK", "TL", "TM", "TN", "TO", "TR", "TT", "TV", "TW", "TZ", "UA", "UG", "UM", "US", "UY", "UZ", "VA", "VC", "VE", "VG", "VI", "VN", "VU", "WF", "WS", "YE", "YT", "ZA", "ZM", "ZW"];
 const form = document.querySelector('#interest-form');
+const translateInterest = window.leafchefTranslate || (text => text);
 const status = document.querySelector('#interest-status');
 const fields = form.querySelector('fieldset');
 const button = form.querySelector('button');
 const note = document.querySelector('#interest-note');
 function showStatus(message, state = 'info', focus = false) {
-  status.textContent = message;
+  status.textContent = translateInterest(message);
   status.dataset.state = state;
   if (focus) {
     status.focus({ preventScroll: true });
@@ -16,8 +17,9 @@ const endpoint = 'https://vjkdmxknbtlrsnsqfayq.supabase.co/functions/v1/register
 // Public anon key for the function's existing JWT gateway. Never use a service-role key.
 const publicKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqa2RteGtuYnRscnNuc3FmYXlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5NjkxMDEsImV4cCI6MjEwMDU0NTEwMX0.M-3gNiQLFNEsT90YRVAmmIq8n-X_c-JuCJk79oXW6nI';
 const headers = { apikey: publicKey, Authorization: `Bearer ${publicKey}` };
-const regionNames = new Intl.DisplayNames(['en'], {type:'region'});
-const choices = countryCodes.map(code => ({code, name:regionNames.of(code)})).sort((a,b) => a.name.localeCompare(b.name));
+const interestLanguage = window.leafchefLanguage || 'en';
+const regionNames = new Intl.DisplayNames([interestLanguage], {type:'region'});
+const choices = countryCodes.map(code => ({code, name:regionNames.of(code)})).sort((a,b) => a.name.localeCompare(b.name, interestLanguage));
 for (const choice of choices) {
   const option = document.createElement('option'); option.value = choice.code; option.textContent = choice.name;
   form.elements.country.append(option);
@@ -56,7 +58,7 @@ window.addEventListener('storage', event => {
 });
 function updateButton() {
   button.disabled = fields.disabled || !consent.checked || !token || submitting;
-  button.textContent = submitting ? 'Sending...' : "I'm interested";
+  button.textContent = translateInterest(submitting ? 'Sending...' : "I'm interested");
   form.setAttribute('aria-busy', String(submitting));
 }
 function resetChallenge() {
@@ -68,7 +70,7 @@ window.leafchefTurnstileReady = () => {
   if (!consent.checked || fields.disabled) return;
   try {
     widget = window.turnstile.render('#interest-challenge', {
-      sitekey: '0x4AAAAAAF-R_WrP0qn7H4Ao', action: 'interest',
+      sitekey: '0x4AAAAAAF-R_WrP0qn7H4Ao', action: 'interest', language: interestLanguage,
       callback: value => { token = value; updateButton(); showStatus("Ready! Press I'm interested to send your interest."); },
       'expired-callback': () => { token = ''; updateButton(); showStatus('The spam check expired. Please complete it again.', 'error'); },
       'error-callback': () => {
@@ -136,7 +138,10 @@ form.addEventListener('submit', async event => {
       showSubmitted(message, true);
     } else {
       resetChallenge();
-      showStatus(data.message || 'Your interest could not be sent. Please try again later.', 'error', true);
+      const fallback = 'Your interest could not be sent. Please try again later.';
+      // Unexpected provider text must not put a translated page back into English.
+      const message = data.message && (interestLanguage === 'en' || translateInterest(data.message) !== data.message) ? data.message : fallback;
+      showStatus(message, 'error', true);
     }
   } catch {
     resetChallenge();

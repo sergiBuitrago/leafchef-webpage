@@ -12,11 +12,44 @@ async function setup(open, settings = {}) {
  const storage=settings.storage || new Map();
  const listeners={};
  const localStorage={getItem:key=>{if(settings.storageBlocked)throw new Error('Storage blocked');return storage.get(key) ?? null;},setItem:(key,value)=>{if(settings.storageBlocked)throw new Error('Storage blocked');storage.set(key,value);}};
- const form={setAttribute:(key,value)=>{attributes[key]=value;},querySelector:s=>s==='fieldset'?fields:button,addEventListener:(event,fn)=>{submit=fn;},reportValidity:()=>true,reset(){},elements:{country:{value:'DE',append(){}},website:{value:''}}};
+ const countries=[];
+ const form={setAttribute:(key,value)=>{attributes[key]=value;},querySelector:s=>s==='fieldset'?fields:button,addEventListener:(event,fn)=>{submit=fn;},reportValidity:()=>true,reset(){},elements:{country:{value:'DE',append(option){countries.push(option);}},website:{value:''}}};
  const context={AbortSignal,document:{querySelector:s=>s==='#interest-form'?form:s==='#interest-consent'?consent:s==='#interest-note'?note:status,createElement:()=>({}),head:{append:s=>{script=s;}}},window:{localStorage,addEventListener:(type,fn)=>{listeners[type]=fn;},turnstile:{render:(selector,config)=>{options=config;return 0;},reset:()=>{resets++;},remove:()=>{removed=true;}}},fetch:async(url,config)=>{calls.push({url,config});if(calls.length>1){if(settings.wait)await settings.wait;if(settings.networkError)throw new Error('Network failed');return settings.postResponse || {ok:true,json:async()=>({message:'Thank you!'})};}return {ok:true,json:async()=>({message:open?'open':'closed'})};}};
+ if(settings.language) {
+  context.document.documentElement={lang:settings.language};
+  vm.runInNewContext(await readFile(new URL(`../public/locales/${settings.language}.js`,import.meta.url),'utf8'),context);
+  vm.runInNewContext(await readFile(new URL('../public/i18n.js',import.meta.url),'utf8'),context);
+ }
  vm.runInNewContext(source,context);
  await new Promise(resolve=>setImmediate(resolve));
- return {fields,button,status,calls,note,attributes,storage,storageEvent:event=>listeners.storage(event),get script(){return script;},get options(){return options;},get removed(){return removed;},get resets(){return resets;},render:()=>{consent.checked=true;change();context.window.leafchefTurnstileReady();},withdraw:()=>{consent.checked=false;change();},submit:()=>submit({preventDefault(){}})};
+ return {fields,button,status,calls,note,attributes,storage,countries,storageEvent:event=>listeners.storage(event),get script(){return script;},get options(){return options;},get removed(){return removed;},get resets(){return resets;},render:()=>{consent.checked=true;change();context.window.leafchefTurnstileReady();},withdraw:()=>{consent.checked=false;change();},submit:()=>submit({preventDefault(){}})};
+}
+
+for(const language of ['de','es','fr']) {
+ test(`${language}: translated form states, countries, consent and successful return visit`,async()=>{
+  const dictionary=JSON.parse(await readFile(new URL(`../locales/${language}.json`,import.meta.url),'utf8'));
+  const runtime=JSON.parse(await readFile(new URL('../locales/runtime.json',import.meta.url),'utf8'));
+  const closed=await setup(false,{language});
+  assert.equal(closed.status.textContent,dictionary['The interest form is not open yet. Please check back later.']);
+  assert.equal(closed.script,undefined);
+  const storage=new Map();const app=await setup(true,{language,storage});
+  assert.equal(app.script,undefined);app.render();
+  assert.equal(app.options.language,language);
+  assert.equal(app.countries.find(option=>option.value==='DE').textContent,new Intl.DisplayNames([language],{type:'region'}).of('DE'));
+  app.options.callback('token');await app.submit();
+  assert.equal(app.status.textContent,runtime["Thank you! Your interest has been sent. You're helping LeafChef grow."][language]);
+  const returning=await setup(true,{language,storage});
+  assert.equal(returning.status.textContent,runtime["You've already sent your interest. Thank you for helping LeafChef grow."][language]);
+  assert.equal(returning.calls.length,0);
+ });
+ test(`${language}: server errors stay translated and unknown messages use a translated fallback`,async()=>{
+  const runtime=JSON.parse(await readFile(new URL('../locales/runtime.json',import.meta.url),'utf8'));
+  for(const message of ['The interest form is busy. Please try again later.','Unexpected upstream failure']) {
+   const app=await setup(true,{language,postResponse:{ok:false,json:async()=>({message})}});
+   app.render();app.options.callback('token');await app.submit();
+   assert.equal(app.status.textContent,runtime[message in runtime ? message : 'Your interest could not be sent. Please try again later.'][language]);
+  }
+ });
 }
 test('closed form never loads the third-party challenge',async()=>{
  const app=await setup(false);

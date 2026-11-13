@@ -5,8 +5,9 @@
   "type": "module",
   "description": "LeafChef promotional website",
   "scripts": {
+    "localize": "node scripts/localize.mjs",
     "dev": "node scripts/serve.mjs",
-    "check": "node --check public/site.js && node --check public/interest.js && node --check scripts/serve.mjs && node scripts/check.mjs && node --test tests/interest-frontend.test.mjs supabase/functions/register-interest/handler.test.mjs",
+    "check": "node --check public/site.js && node --check public/interest.js && node --check public/i18n.js && node --check scripts/serve.mjs && node scripts/localize.mjs --check && node scripts/check.mjs && node --test tests/*.test.mjs supabase/functions/register-interest/handler.test.mjs",
     "start": "node scripts/serve.mjs"
   },
   "engines": {

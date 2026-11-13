@@ -7,7 +7,23 @@ The Android app is a separate project. Do not copy its private data or secrets.
 
 Node 18+; no dependencies or install step. `npm run dev` serves `public/` on
 http://127.0.0.1:4173. `npm run check` validates syntax, assets and anchors and runs
-27 mocked-provider/frontend checks. No real email is sent by the checks.
+mocked-provider/frontend and localization checks. No real email is sent by the checks.
+
+## Languages
+
+English, German, Spanish and French are available through a language switcher on
+every page, including legal/privacy pages. Each translation has its own static
+URL (for example `index.de.html`) and works without JavaScript. The switcher
+preserves the equivalent page; there is no automatic language redirect or
+language-preference storage. The interactive examples, interest form messages,
+country names and optional Turnstile widget use the selected language.
+
+English HTML in `public/` is the source layout. Edit translations in
+`locales/de.json`, `locales/es.json` and `locales/fr.json`, and interactive messages
+in `locales/runtime.json`. Run `npm run localize` after changing English copy,
+layouts or translations. Commit the generated localized HTML and `public/locales/`
+scripts too: Pages deploys `public/` directly. `npm run check` rejects missing or
+stale translations and validates every page's local links and assets.
 
 ## Website and hosting
 

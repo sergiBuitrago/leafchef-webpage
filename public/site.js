@@ -1,3 +1,4 @@
+const translateSite = window.leafchefTranslate || (text => text);
 const tabs = [...document.querySelectorAll('[data-tab]')];
 const panels = [...document.querySelectorAll('[data-panel]')];
 const captions = {plan:'The weekly plan, arranged by day.',pantry:'Pantry shelves, filters and ingredient quantities.',shopping:'Try checking an item. Bought items leave the To buy list.'};
@@ -8,7 +9,7 @@ function selectTab(tab, focus = false) {
     item.tabIndex = selected ? 0 : -1;
   }
   for (const panel of panels) panel.hidden = panel.dataset.panel !== tab.dataset.tab;
-  document.querySelector('#preview-caption').textContent = captions[tab.dataset.tab];
+  document.querySelector('#preview-caption').textContent = translateSite(captions[tab.dataset.tab]);
   for (const item of document.querySelectorAll('[data-app-nav]')) item.classList.toggle('selected', item.dataset.appNav === tab.dataset.tab);
   document.querySelector('#reset-shopping').hidden = tab.dataset.tab !== 'shopping';
   if (focus) tab.focus();
@@ -31,7 +32,7 @@ function updateShopping(event) {
   const inputs = [...shopping.querySelectorAll('input')];
   const remaining = inputs.filter(input => !input.checked).length;
   document.querySelector('#shopping-number').textContent = String(remaining);
-  document.querySelector('#shopping-count').textContent = remaining === 1 ? 'ingredient to buy' : 'ingredients to buy';
+  document.querySelector('#shopping-count').textContent = translateSite(remaining === 1 ? 'ingredient to buy' : 'ingredients to buy');
   for (const input of inputs) input.closest('label').hidden = input.checked;
   for (const group of shopping.querySelectorAll('[data-shopping-group]')) {
     group.hidden = [...group.querySelectorAll('input')].every(input => input.checked);
@@ -50,7 +51,9 @@ const routineExample = document.querySelector('#routine-example');
 function updateRoutineSummary() {
   const selected = [...routineExample.querySelectorAll('input:checked')];
   const days = new Set(selected.map(input => input.dataset.routineDay)).size;
-  document.querySelector('#routine-summary').textContent = `${selected.length} meal${selected.length === 1 ? '' : 's'} across ${days} day${days === 1 ? '' : 's'}`;
+  document.querySelector('#routine-summary').textContent = translateSite('{meals} {mealLabel} across {days} {dayLabel}')
+    .replace('{meals}', selected.length).replace('{mealLabel}', translateSite(selected.length === 1 ? 'meal' : 'meals'))
+    .replace('{days}', days).replace('{dayLabel}', translateSite(days === 1 ? 'day' : 'days'));
 }
 routineExample.addEventListener('change', updateRoutineSummary);
 updateRoutineSummary();
