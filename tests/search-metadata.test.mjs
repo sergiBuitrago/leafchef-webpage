@@ -4,6 +4,29 @@ import {readFile} from 'node:fs/promises';
 const read = path => readFile(new URL('../public/' + path, import.meta.url), 'utf8');
 const variants = {en:'https://leafchef.app/',de:'https://leafchef.app/index.de.html',es:'https://leafchef.app/index.es.html',fr:'https://leafchef.app/index.fr.html'};
 
+test('landing titles describe the vegan meal planner in each language', async () => {
+  const titles = {
+    en:'LeafChef — Vegan Meal Planner for Your Household',
+    de:'LeafChef — Veganer Essensplaner für deinen Haushalt',
+    es:'LeafChef — Planificador de comidas veganas para tu hogar',
+    fr:'LeafChef — Planificateur de repas véganes pour votre foyer'
+  };
+  for (const [language, title] of Object.entries(titles)) {
+    const html = await read(language === 'en' ? 'index.html' : `index.${language}.html`);
+    assert.ok(html.includes(`<title>${title}</title>`));
+    assert.ok(html.includes(`<meta property="og:title" content="${title}">`));
+    assert.ok(html.includes('<meta property="og:site_name" content="LeafChef">'));
+  }
+});
+
+test('root home page provides one valid WebSite entity with the canonical site name', async () => {
+  const html = await read('index.html');
+  const scripts = [...html.matchAll(/<script type="application\/ld\+json"[^>]*>([^]*?)<\/script>/g)];
+  assert.equal(scripts.length, 1);
+  assert.deepEqual(JSON.parse(scripts[0][1]), {'@context':'https://schema.org','@type':'WebSite',name:'LeafChef',url:'https://leafchef.app/'});
+  for (const language of ['de','es','fr']) assert.doesNotMatch(await read(`index.${language}.html`), /id="site-schema"/);
+});
+
 test('every landing page has its own canonical and reciprocal absolute language alternates', async () => {
   for (const [language, url] of Object.entries(variants)) {
     const html = await read(language === 'en' ? 'index.html' : `index.${language}.html`);

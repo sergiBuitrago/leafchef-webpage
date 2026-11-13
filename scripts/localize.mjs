@@ -5,13 +5,18 @@ const languages = ['de', 'es', 'fr'];
 const pages = ['index', 'legal', 'impressum', 'privacy', 'terms'];
 const check = process.argv.includes('--check');
 const site = 'https://leafchef.app';
+const stripSiteSchema = html => html.replace(/<script type="application\/ld\+json" id="site-schema">[^]*?<\/script>\s*/g, '');
 const pageUrl = (page, language) => `${site}/${page === 'index' && language === 'en' ? '' : `${page}${language === 'en' ? '' : '.' + language}.html`}`;
 function searchMetadata(html, page, language) {
-  html = html.replace(/<link rel="(?:canonical|alternate)"[^>]*>\s*/g, '').replace(/<meta property="og:url"[^>]*>\s*/g, '');
+  html = stripSiteSchema(html).replace(/<link rel="(?:canonical|alternate)"[^>]*>\s*/g, '').replace(/<meta property="og:(?:url|site_name)"[^>]*>\s*/g, '');
   const canonical = pageUrl(page, language);
   const alternates = ['en', ...languages].map(lang => `<link rel="alternate" hreflang="${lang}" href="${pageUrl(page, lang)}">`).join('\n  ');
   const metadata = `<link rel="canonical" href="${canonical}">\n  <meta property="og:url" content="${canonical}">\n  ${alternates}\n  <link rel="alternate" hreflang="x-default" href="${pageUrl(page, 'en')}">\n`;
-  return html.replace('</head>', metadata + '</head>');
+  const siteName = page === 'index' ? '  <meta property="og:site_name" content="LeafChef">\n' : '';
+  // Google's site-name markup belongs on the domain's root home page.
+  const schema = page === 'index' && language === 'en'
+    ? `  <script type="application/ld+json" id="site-schema">${JSON.stringify({'@context':'https://schema.org','@type':'WebSite',name:'LeafChef',url:site+'/'})}</script>\n` : '';
+  return html.replace('</head>', metadata + siteName + schema + '</head>');
 }
 const runtime = JSON.parse(await readFile(new URL('locales/runtime.json', root), 'utf8'));
 const invariant = /^(?:LeafChef|© 2026 LeafChef|Sergi Buitrago Llorente|Britzer Strasse 62C|12109 Berlin|sergi\.buitrago@gmail\.com|leafchef\.web\.interest\.submitted\.v1|English|Deutsch|Español|Français|[\d\s+✓↗▴▰©/–.,:]+|\d+ g)$/u;
@@ -40,7 +45,7 @@ for (const language of languages) {
     throw new Error(`Missing ${language} translation: ${text}`);
   };
   for (const page of pages) {
-    let html = await readFile(new URL(`public/${page}.html`, root), 'utf8');
+    let html = stripSiteSchema(await readFile(new URL(`public/${page}.html`, root), 'utf8'));
     html = html.split(/(<[^>]*>)/).map(part => {
       if (!part.startsWith('<')) return part.trim() ? part.replace(part.trim(), escape(translate(part.trim()))) : part;
       return part.replace(/\b(aria-label|alt)="([^"]+)"/g, (_, key, value) => `${key}="${escape(translate(value))}"`)
