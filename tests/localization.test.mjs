@@ -33,7 +33,17 @@ for (const language of ['de', 'es', 'fr']) {
     const selectors = Object.fromEntries(['#preview-caption','#reset-shopping','#shopping-number','#shopping-count','#shopping-empty','#routine-summary'].map(key => [key,node()]));
     const inputs = [0,1,2].map(()=>({checked:false,closest:()=>node()}));
     const shopping = Object.assign(node(),{querySelectorAll:selector=>selector==='input'?inputs:[],reset(){inputs.forEach(input=>{input.checked=false;});}});
-    const routine = Object.assign(node(),{selected:[],querySelectorAll(){return this.selected;}});
+    const meals = ['Monday','Tuesday','Wednesday'].map(day => {
+      const label = {textContent:translate('Dinner')};
+      const attributes = {'aria-label':day+' '+translate('Dinner')};
+      return Object.assign(node(), {
+        dataset:{routineDay:day,routineState:'unplanned'}, label, attributes,
+        querySelector:()=>label,
+        getAttribute:key=>attributes[key],
+        setAttribute(key,value){attributes[key]=value;},
+      });
+    });
+    const routine = Object.assign(node(),{querySelectorAll(){return meals;}});
     context.document.querySelector = selector => selector==='#demo-shopping'?shopping:selector==='#routine-example'?routine:selectors[selector];
     context.document.querySelectorAll = selector => selector==='[data-tab]'?tabs:selector==='[data-panel]'?panels:[];
     vm.runInNewContext(await read('public/site.js'),context);
@@ -51,9 +61,22 @@ for (const language of ['de', 'es', 'fr']) {
     assert.equal(selectors['#shopping-number'].textContent,'3');
     const format=(meals,days)=>translate('{meals} {mealLabel} across {days} {dayLabel}').replace('{meals}',meals).replace('{mealLabel}',translate(meals===1?'meal':'meals')).replace('{days}',days).replace('{dayLabel}',translate(days===1?'day':'days'));
     assert.equal(selectors['#routine-summary'].textContent,format(0,0));
-    routine.selected=[{dataset:{routineDay:'Monday'}}];routine.handlers.change();
+    meals[0].handlers.click();
+    assert.equal(meals[0].dataset.routineState,'cook');
+    assert.equal(meals[0].attributes['aria-checked'],'true');
     assert.equal(selectors['#routine-summary'].textContent,format(1,1));
-    routine.selected.push({dataset:{routineDay:'Tuesday'}});routine.handlers.change();
+    meals[0].handlers.click();
+    assert.equal(meals[0].dataset.routineState,'leftovers');
+    assert.equal(meals[0].attributes['aria-checked'],'mixed');
+    assert.equal(meals[0].label.textContent,translate('{meal} leftovers').replace('{meal}',translate('Dinner')));
+    assert.ok(meals[0].attributes['aria-label'].endsWith(translate('Leftovers')));
+    assert.equal(selectors['#routine-summary'].textContent,format(1,1));
+    meals[1].handlers.click();
     assert.equal(selectors['#routine-summary'].textContent,format(2,2));
+    meals[0].handlers.click();
+    assert.equal(meals[0].dataset.routineState,'unplanned');
+    assert.equal(meals[0].attributes['aria-checked'],'false');
+    assert.equal(meals[0].label.textContent,translate('Dinner'));
+    assert.equal(selectors['#routine-summary'].textContent,format(1,1));
   });
 }

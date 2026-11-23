@@ -33,5 +33,6 @@
   "The spam check is temporarily unavailable.": {"de":"Die Spamprüfung ist vorübergehend nicht verfügbar.","es":"La comprobación antispam no está disponible temporalmente.","fr":"La vérification antispam est temporairement indisponible."},
   "Please repeat the spam check.": {"de":"Bitte wiederhole die Spamprüfung.","es":"Repite la comprobación antispam.","fr":"Veuillez refaire la vérification antispam."},
   "We could not send your interest. Please try again later.": {"de":"Wir konnten dein Interesse nicht senden. Bitte versuche es später erneut.","es":"No hemos podido enviar tu interés. Inténtalo más tarde.","fr":"Nous n’avons pas pu envoyer votre intérêt. Réessayez plus tard."},
-  "We could not confirm your submission. Please try again later.": {"de":"Wir konnten deine Einsendung nicht bestätigen. Bitte versuche es später erneut.","es":"No hemos podido confirmar el envío. Inténtalo más tarde.","fr":"Nous n’avons pas pu confirmer votre envoi. Réessayez plus tard."}
+  "We could not confirm your submission. Please try again later.": {"de":"Wir konnten deine Einsendung nicht bestätigen. Bitte versuche es später erneut.","es":"No hemos podido confirmar el envío. Inténtalo más tarde.","fr":"Nous n’avons pas pu confirmer votre envoi. Réessayez plus tard."},
+  "{meal} leftovers": {"de":"{meal} – Reste","es":"{meal} – sobras","fr":"{meal} – restes"}
 }

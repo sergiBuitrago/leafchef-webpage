@@ -34,6 +34,15 @@ They use the app's DM Sans font (license in assets), five navigation destination
 native icon shapes and light palette. The hero food photograph is AI-generated
 illustration. There are no testimonials, invented customer figures or download links.
 
+App content was aligned with the Android source through TASK-406 (2026-11-23):
+Cook/Leftovers/unplanned routine choices, dated extra portions, the two postponement
+modes, per-person planned nutrition estimates, and ingredient-row gathering. The
+routine example uses tappable meal pills that cycle Unplanned → Cook → Leftovers →
+Unplanned, with keyboard and three-state checkbox support. It counts Cook and Leftovers
+as planned meals; it does not allocate portions or connect to app data. The weekly
+preview illustrates a cooking meal and its next-day leftovers. Android rollout and
+device validation of the latest app changes remain pending in the app project.
+
 Only `public/` is uploaded by the manual GitHub Pages workflow. Expected URL:
 https://leafchef.app/ . See GITHUB_PAGES.md.
 The owner published the website through GitHub Pages and confirmed the live notification test. Browser visual comparison

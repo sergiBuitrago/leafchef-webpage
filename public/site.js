@@ -48,12 +48,32 @@ document.querySelector('#reset-shopping').addEventListener('click', () => { shop
 
 // Illustrative weekly routine only: no persistence or app/backend connection.
 const routineExample = document.querySelector('#routine-example');
+const routineMeals = [...routineExample.querySelectorAll('[data-routine-state]')];
+const routineStates = ['unplanned', 'cook', 'leftovers'];
+const routineStateLabels = {unplanned: 'Unplanned', cook: 'Cook', leftovers: 'Leftovers'};
+for (const meal of routineMeals) {
+  const label = meal.querySelector('.routine-meal-label');
+  const mealName = label.textContent;
+  const accessibleName = meal.getAttribute('aria-label');
+  function renderMeal() {
+    const state = meal.dataset.routineState;
+    meal.setAttribute('aria-checked', state === 'leftovers' ? 'mixed' : String(state === 'cook'));
+    meal.setAttribute('aria-label', `${accessibleName}: ${translateSite(routineStateLabels[state])}`);
+    label.textContent = state === 'leftovers'
+      ? translateSite('{meal} leftovers').replace('{meal}', mealName) : mealName;
+  }
+  renderMeal();
+  meal.addEventListener('click', () => {
+    meal.dataset.routineState = routineStates[(routineStates.indexOf(meal.dataset.routineState) + 1) % routineStates.length];
+    renderMeal();
+    updateRoutineSummary();
+  });
+}
 function updateRoutineSummary() {
-  const selected = [...routineExample.querySelectorAll('input:checked')];
+  const selected = routineMeals.filter(meal => meal.dataset.routineState !== 'unplanned');
   const days = new Set(selected.map(input => input.dataset.routineDay)).size;
   document.querySelector('#routine-summary').textContent = translateSite('{meals} {mealLabel} across {days} {dayLabel}')
     .replace('{meals}', selected.length).replace('{mealLabel}', translateSite(selected.length === 1 ? 'meal' : 'meals'))
     .replace('{days}', days).replace('{dayLabel}', translateSite(days === 1 ? 'day' : 'days'));
 }
-routineExample.addEventListener('change', updateRoutineSummary);
 updateRoutineSummary();
